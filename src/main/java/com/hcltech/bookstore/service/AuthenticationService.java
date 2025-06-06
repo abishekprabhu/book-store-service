@@ -1,7 +1,10 @@
 package com.hcltech.bookstore.service;
 
+import com.hcltech.bookstore.dao.UserDAO.UserDAOService;
 import com.hcltech.bookstore.dto.AuthenticationDTO.AuthenticationRequestDto;
 import com.hcltech.bookstore.dto.AuthenticationDTO.AuthenticationResponseDto;
+import com.hcltech.bookstore.dto.AuthorDTO.AuthorRequestDTO;
+import com.hcltech.bookstore.dto.CustomerDTO.CustomerRequestDTO;
 import com.hcltech.bookstore.mapper.User.UserMapper;
 import com.hcltech.bookstore.model.Author;
 import com.hcltech.bookstore.model.Customer;
@@ -31,9 +34,6 @@ public class AuthenticationService {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -41,11 +41,13 @@ public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
 
+    private final UserDAOService userDAOService;
+
 /*    public AuthenticationService(final AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }*/
 
-    public AuthenticationRequestDto register(final AuthenticationRequestDto authenticationRequestDto) {
+/*    public AuthenticationRequestDto register(final AuthenticationRequestDto authenticationRequestDto) {
         User user;
         log.info("AUTHENTICATION REQUEST DTO : {}", authenticationRequestDto);
         if ("AUTHOR".equalsIgnoreCase(authenticationRequestDto.getRoles())) {
@@ -57,9 +59,28 @@ public class AuthenticationService {
         }
 //        final Author user = toAuthor(authenticationRequestDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        final User result = userRepository.save(user);
+//        final User result = userRepository.save(user);
+        final User result = userDAOService.save(user);
         log.info("USER : {}", result);
-        return userMapper.toAuthenticationRequestDto(result);
+        return userMapper.to(result);
+    }*/
+
+    public Author register(final AuthorRequestDTO authenticationRequestDto) {
+        User user;
+        log.info("AUTHENTICATION REQUEST DTO : {}", authenticationRequestDto);
+        if ("AUTHOR".equalsIgnoreCase(authenticationRequestDto.getRoles())) {
+            user = toAuthor(authenticationRequestDto);
+
+        }else {
+            user = toCustomer(authenticationRequestDto);
+
+        }
+//        final Author user = toAuthor(authenticationRequestDto);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        final User result = userRepository.save(user);
+        final User result = userDAOService.save(user);
+        log.info("USER : {}", result);
+        return userMapper.to(result);
     }
 
     public AuthenticationResponseDto login(AuthenticationRequestDto authenticationRequestDto) {
@@ -75,7 +96,7 @@ public class AuthenticationService {
         throw new UsernameNotFoundException(authenticationRequestDto.getUsername() + " not found");
     }
 
-    private Customer toCustomer(AuthenticationRequestDto dto) {
+    private Customer toCustomer(CustomerRequestDTO dto) {
         log.info("AUTH DTO :{}", dto);
         return userMapper.toCustomer(dto);
     }
