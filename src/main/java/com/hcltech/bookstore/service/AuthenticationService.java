@@ -9,11 +9,9 @@ import com.hcltech.bookstore.mapper.User.UserMapper;
 import com.hcltech.bookstore.model.Author;
 import com.hcltech.bookstore.model.Customer;
 import com.hcltech.bookstore.model.User;
-import com.hcltech.bookstore.repository.UserRepository;
 import com.hcltech.bookstore.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,88 +25,50 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    @Autowired
-    private JpaUserDetailsService jpaUserDetailsService;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private UserMapper userMapper;
-
+    private final JpaUserDetailsService jpaUserDetailsService;
+    private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
-
     private final UserDAOService userDAOService;
 
-/*    public AuthenticationService(final AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }*/
-
-/*    public AuthenticationRequestDto register(final AuthenticationRequestDto authenticationRequestDto) {
-        User user;
-        log.info("AUTHENTICATION REQUEST DTO : {}", authenticationRequestDto);
-        if ("AUTHOR".equalsIgnoreCase(authenticationRequestDto.getRoles())) {
-            user = toAuthor(authenticationRequestDto);
-
-        }else {
-            user = toCustomer(authenticationRequestDto);
-
-        }
-//        final Author user = toAuthor(authenticationRequestDto);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        final User result = userRepository.save(user);
-        final User result = userDAOService.save(user);
-        log.info("USER : {}", result);
-        return userMapper.to(result);
-    }*/
-
-    public Author register(final AuthorRequestDTO authenticationRequestDto) {
-        User user;
-        log.info("AUTHENTICATION REQUEST DTO : {}", authenticationRequestDto);
-        if ("AUTHOR".equalsIgnoreCase(authenticationRequestDto.getRoles())) {
-            user = toAuthor(authenticationRequestDto);
-
-        }else {
-            user = toCustomer(authenticationRequestDto);
-
-        }
-//        final Author user = toAuthor(authenticationRequestDto);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        final User result = userRepository.save(user);
-        final User result = userDAOService.save(user);
-        log.info("USER : {}", result);
-        return userMapper.to(result);
+    /**
+     * Registers a new author.
+     */
+    public Author registerAuthor(final AuthorRequestDTO dto) {
+        log.info("Registering Author: {}", dto);
+        Author author = userMapper.toAuthor(dto);
+        author.setPassword(passwordEncoder.encode(author.getPassword()));
+        return userDAOService.save(author);
     }
 
+    /**
+     * Registers a new customer.
+     */
+    public Customer registerCustomer(final CustomerRequestDTO dto) {
+        log.info("Registering Customer: {}", dto);
+        Customer customer = userMapper.toCustomer(dto);
+        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        return userDAOService.save(customer);
+    }
+
+    /**
+     * Authenticates a user and generates JWT.
+     */
     public AuthenticationResponseDto login(AuthenticationRequestDto authenticationRequestDto) {
-        final Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authenticationRequestDto.getUsername(),
-                                                        authenticationRequestDto.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        authenticationRequestDto.getUsername(),
+                        authenticationRequestDto.getPassword()
+                )
+        );
+
         if (authentication.isAuthenticated()) {
-            final UserDetails userDetails = jpaUserDetailsService.loadUserByUsername(
-                    authenticationRequestDto.getUsername());
-            final String jwt = jwtUtil.generateToken(userDetails);
+            UserDetails userDetails = jpaUserDetailsService.loadUserByUsername(authenticationRequestDto.getUsername());
+            String jwt = jwtUtil.generateToken(userDetails);
             return new AuthenticationResponseDto(jwt);
         }
-        throw new UsernameNotFoundException(authenticationRequestDto.getUsername() + " not found");
-    }
 
-    private Customer toCustomer(CustomerRequestDTO dto) {
-        log.info("AUTH DTO :{}", dto);
-        return userMapper.toCustomer(dto);
+        throw new UsernameNotFoundException("Invalid credentials");
     }
-    private Author toAuthor(AuthenticationRequestDto dto) {
-        return userMapper.toAuthor(dto);
-    }
-
-/*    private AuthenticationRequestDto toAuthenticationRequestDto(User user) {
-        final AuthenticationRequestDto authenticationRequestDto = new AuthenticationRequestDto();
-        authenticationRequestDto.setUsername(user.getUsername());
-         authenticationRequestDto.setPassword(user.getPassword());
-        authenticationRequestDto.setRoles(user.getRoles());
-        return authenticationRequestDto;
-    }*/
 }

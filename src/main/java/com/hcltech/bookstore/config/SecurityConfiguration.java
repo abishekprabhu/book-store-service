@@ -32,7 +32,9 @@ public class SecurityConfiguration {
             "/swagger-resources/**",
             "/v3/api-docs/**" };
     private static final String[] H2_CONSOLE_WHITE_LIST     = { "/h2-console/**" };
-    private static final String[] AUTHENTICATION_WHITE_LIST = { "/api/v1/auth/register",
+    private static final String[] AUTHENTICATION_WHITE_LIST = {
+            "/api/v1/auth/register/author",
+            "/api/v1/auth/register/customer",
             "/api/v1/auth/login",
             "/api/v1/auth/logout",
             "/api/v1/auth/**" };
