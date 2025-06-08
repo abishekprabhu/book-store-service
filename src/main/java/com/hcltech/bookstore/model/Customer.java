@@ -1,16 +1,19 @@
 package com.hcltech.bookstore.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Customer extends User{
+
+    private String name;
+
 
 /*    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")

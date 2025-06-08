@@ -1,6 +1,6 @@
 package com.hcltech.bookstore.filter;
 
-import com.hcltech.bookstore.service.JpaUserDetailsService;
+import com.hcltech.bookstore.service.AuthService.JpaUserDetailsService;
 import com.hcltech.bookstore.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

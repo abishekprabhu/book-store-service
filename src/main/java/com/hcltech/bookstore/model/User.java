@@ -24,7 +24,7 @@ public abstract class User {
 
     @Column(nullable = false)
     protected String password;
-    protected String name;
+//    protected String name;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))

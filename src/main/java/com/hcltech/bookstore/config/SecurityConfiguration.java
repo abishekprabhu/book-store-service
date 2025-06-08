@@ -2,7 +2,7 @@ package com.hcltech.bookstore.config;
 
 
 import com.hcltech.bookstore.filter.JwtAuthRequestFilter;
-import com.hcltech.bookstore.service.JpaUserDetailsService;
+import com.hcltech.bookstore.service.AuthService.JpaUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -57,8 +56,9 @@ public class SecurityConfiguration {
                         .permitAll()
                         .requestMatchers(AUTHENTICATION_WHITE_LIST)
                         .permitAll()
-                        .requestMatchers("/home")
-                        .hasRole("ADMIN")
+                        .requestMatchers("/api/v1/author/**").hasRole("AUTHOR")
+                        .requestMatchers("/api/v1/customer/**").hasRole("CUSTOMER")
+                        .requestMatchers("/api/v1/books/**").hasAnyRole("AUTHOR", "CUSTOMER")
                         .anyRequest()
                         .authenticated())
                 // tell spring security not to create any session

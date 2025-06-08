@@ -1,10 +1,9 @@
-package com.hcltech.bookstore.service;
+package com.hcltech.bookstore.service.AuthService;
 
 import com.hcltech.bookstore.model.User;
 import com.hcltech.bookstore.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
