@@ -6,6 +6,7 @@ import com.hcltech.bookstore.service.AuthService.JpaUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -35,7 +36,6 @@ public class SecurityConfiguration {
             "/api/v1/auth/register/author",
             "/api/v1/auth/register/customer",
             "/api/v1/auth/login",
-            "/api/v1/auth/logout",
             "/api/v1/auth/**" };
 
     @Autowired
@@ -58,15 +58,13 @@ public class SecurityConfiguration {
                         .permitAll()
                         .requestMatchers("/api/v1/author/**").hasRole("AUTHOR")
                         .requestMatchers("/api/v1/customer/**").hasRole("CUSTOMER")
-                        .requestMatchers("/api/v1/books/**").hasAnyRole("AUTHOR", "CUSTOMER")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/books").hasRole("CUSTOMER")
+                        .requestMatchers("/api/v1/books/**").hasRole("AUTHOR")
+                        .requestMatchers("/api/v1/purchases/**").hasRole("CUSTOMER")
                         .anyRequest()
                         .authenticated())
-                // tell spring security not to create any session
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // .authenticationProvider(authenticationProvider(userDetailsService(passwordEncoder())))
-                // authentication provider
                 .authenticationProvider(authenticationProvider(jpaUserDetailsService))
-                // before filter
                 .addFilterBefore(jwtAuthRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -86,7 +84,6 @@ public class SecurityConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-//        PasswordEncoder passwordEncoder = NoOpPasswordEncoder.getInstance();
         return new BCryptPasswordEncoder();
     }
 }

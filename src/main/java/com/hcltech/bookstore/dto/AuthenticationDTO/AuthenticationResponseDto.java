@@ -10,8 +10,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthenticationResponseDto {
-    private String jwt;
     private String username;
+    private String jwt;
     private Set<String> role;
 
 }

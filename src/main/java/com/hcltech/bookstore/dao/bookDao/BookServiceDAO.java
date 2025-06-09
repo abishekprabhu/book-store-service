@@ -11,5 +11,4 @@ public interface BookServiceDAO {
     List<Book> findAll();
     Book save(Book book);
     void delete(Book book);
-    Boolean existsByIsbn(String isbn);
 }

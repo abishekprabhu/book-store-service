@@ -1,7 +1,6 @@
 package com.hcltech.bookstore.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.*;
@@ -18,8 +17,8 @@ public class Author extends User{
 
     private String name;
     private String biography;
-
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "author")
     @JsonManagedReference
     private List<Book> books = new ArrayList<>();
+
 }

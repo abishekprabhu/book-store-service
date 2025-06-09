@@ -24,12 +24,12 @@ public abstract class User {
 
     @Column(nullable = false)
     protected String password;
-//    protected String name;
+//    protected String name; "AUTHOR,CUSTOMER"
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
-    private Set<String> roles;
+    private Set<String> roles; //["AUTHOR",CUSTOMER"]
 
 /*    @Column(name = "roles")
     private String roles;*/

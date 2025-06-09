@@ -38,30 +38,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final UserDAOService userDAOService;
 
-    /**
-     * Registers a new author.
-     */
     public AuthorResponseDTO registerAuthor(final AuthorRequestDTO dto) {
         log.info("Attempting to register new author with username: {}", dto.getUsername());
         Author author = userMapper.toAuthor(dto);
         author.setPassword(passwordEncoder.encode(author.getPassword()));
         author.setRoles(new HashSet<>(Set.of("AUTHOR")));
-        if (author.getBooks() != null) {
-            log.debug("Author has {} books linked", author.getBooks().size());
-            author.getBooks().forEach(book -> {
-                book.setAuthor(author);
-                log.debug("Book '{}' assigned to author '{}'", book.getTitle(), author.getUsername());
-            });
-        }
         userDAOService.save(author);
         AuthorResponseDTO authorResponseDTO = userMapper.toAuthorDTO(author);
         log.info("Author registered successfully: {}", authorResponseDTO.getUsername());
         return authorResponseDTO;
     }
 
-    /**
-     * Registers a new customer.
-     */
     public CustomerResponseDTO registerCustomer(final CustomerRequestDTO dto) {
         log.info("Attempting to register new customer with username: {}", dto.getUsername());
         Customer customer = userMapper.toCustomer(dto);
@@ -74,9 +61,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return customerResponseDTO;
     }
 
-    /**
-     * Authenticates a user and generates JWT.
-     */
     public AuthenticationResponseDto login(AuthenticationRequestDto authenticationRequestDto) {
         log.info("Attempting login for username: {}", authenticationRequestDto);
 

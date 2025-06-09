@@ -1,59 +1,66 @@
 package com.hcltech.bookstore.service.author;
 
-import com.hcltech.bookstore.Exception.EntityNotFoundException;
 import com.hcltech.bookstore.dao.authorDao.AuthorServiceDAO;
+import com.hcltech.bookstore.dto.AuthorDTO.AuthorRequestDTO;
+import com.hcltech.bookstore.dto.AuthorDTO.AuthorResponseDTO;
+import com.hcltech.bookstore.mapper.author.AuthorMapper;
 import com.hcltech.bookstore.model.Author;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorServiceDAO authorServiceDAO;
-
+    private final AuthorMapper authorMapper;
 
     @Override
-    public Optional<Author> getAuthorById(Long id) {
-        return authorServiceDAO.findById(id);
+    @Transactional
+    public List<AuthorResponseDTO> getAllAuthors() {
+        return authorServiceDAO.findAll().stream()
+                .map(authorMapper::toDTO)
+                .toList();
     }
 
     @Override
-    public List<Author> getAllAuthors() {
-        return authorServiceDAO.findAll();
+    @Transactional
+    public Optional<AuthorResponseDTO> getAuthorById(Long id) {
+        Author author = authorServiceDAO.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Author not found with id: " + id));
+        return Optional.of(authorMapper.toDTO(author));
     }
 
     @Override
-    public Author updateAuthor(Long id, Author authorDetails) {
-        Author existingAuthor = authorServiceDAO.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Author not found with id " + id));
+    @Transactional
+    public AuthorResponseDTO updateAuthor(Long id, AuthorRequestDTO updatedAuthor) {
+        Author author = authorServiceDAO.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Author not found with id: " + id));
 
-        existingAuthor.setName(authorDetails.getName());
-        existingAuthor.setBiography(authorDetails.getBiography());
+        author.setName(updatedAuthor.getName());
+        author.setBiography(updatedAuthor.getBiography());
 
-        // Handle books update
-        // Clear existing books and add new ones, maintaining bidirectional link
-        existingAuthor.getBooks().clear();
-
-        if (authorDetails.getBooks() != null) {
-            authorDetails.getBooks().forEach(book -> {
-                book.setAuthor(existingAuthor);
-                existingAuthor.getBooks().add(book);
-            });
-        }
-
-        return authorServiceDAO.save(existingAuthor);
+        Author saved = authorServiceDAO.save(author);
+        return authorMapper.toDTO(saved);
     }
 
     @Override
+    @Transactional
     public void deleteAuthor(Long id) {
-        Author existingAuthor = authorServiceDAO.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Author not found with id " + id));
-        authorServiceDAO.delete(existingAuthor);
+        Author author = authorServiceDAO.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Author not found with id: " + id));
+
+        // Detach author from books
+        author.getBooks().forEach(book -> book.setAuthor(null));
+        authorServiceDAO.save(author); // Save changes to books
+
+        authorServiceDAO.delete(author); // Now safe to delete
     }
+
 }

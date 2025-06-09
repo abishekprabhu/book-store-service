@@ -35,8 +35,4 @@ public class BookServiceDAOImpl implements BookServiceDAO {
         bookRepository.delete(book);
     }
 
-    @Override
-    public Boolean existsByIsbn(String isbn) {
-        return bookRepository.existsByIsbn(isbn);
-    }
 }

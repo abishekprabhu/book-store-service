@@ -1,7 +1,9 @@
 package com.hcltech.bookstore.controller;
 
-import com.hcltech.bookstore.model.Author;
+import com.hcltech.bookstore.dto.AuthorDTO.AuthorRequestDTO;
+import com.hcltech.bookstore.dto.AuthorDTO.AuthorResponseDTO;
 import com.hcltech.bookstore.service.author.AuthorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,21 +18,23 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @GetMapping
-    public ResponseEntity<List<Author>> getAllAuthors() {
-        List<Author> authors = authorService.getAllAuthors();
+    public ResponseEntity<List<AuthorResponseDTO>> getAllAuthors() {
+        List<AuthorResponseDTO> authors = authorService.getAllAuthors();
         return ResponseEntity.ok(authors);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Author> getAuthorById(@PathVariable Long id) {
+    public ResponseEntity<AuthorResponseDTO> getAuthorById(@PathVariable Long id) {
         return authorService.getAuthorById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Author> updateAuthor(@PathVariable Long id, @RequestBody Author updatedAuthor) {
-        Author author = authorService.updateAuthor(id, updatedAuthor);
+    public ResponseEntity<AuthorResponseDTO> updateAuthor(
+            @PathVariable Long id,
+            @Valid @RequestBody AuthorRequestDTO updatedAuthor) {
+        AuthorResponseDTO author = authorService.updateAuthor(id, updatedAuthor);
         return ResponseEntity.ok(author);
     }
 

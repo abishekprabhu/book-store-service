@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Data
 @AllArgsConstructor
@@ -18,15 +20,15 @@ public class Book {
     private Long id;
 
     private String title;
-    @Column(unique = true, nullable = false)
+//    @Column(unique = true, nullable = false)
     private String isbn;
 
-    @Column(precision = 10, scale = 2)
+//    @Column(precision = 10, scale = 2)
     private double price;
     private String description;
 
     @Lob
-    @Column(columnDefinition = "LONGBLOB")
+//    @Column(columnDefinition = "LONGBLOB")
     private byte[] img;
 
     private int stock;
@@ -35,5 +37,9 @@ public class Book {
     @JoinColumn(name = "author_id")
     @JsonBackReference
     private Author author;
+
+    @OneToMany(mappedBy = "book")
+    @JsonBackReference
+    private List<PurchasedBook> purchasedBooks;
 
 }

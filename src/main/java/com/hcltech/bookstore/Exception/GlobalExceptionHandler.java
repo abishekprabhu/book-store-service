@@ -43,11 +43,32 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.NO_CONTENT.value());
-        body.put("error", "INTERNAL_SERVER_ERROR");
+        body.put("status", HttpStatus.NOT_FOUND.value());
+        body.put("error", "Entity is not found");
         body.put("message", ex.getMessage());
         body.put("path", request.getDescription(false).substring(4));
-        return new ResponseEntity<>(body, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<Object> handleUsernameNotFoundException(UsernameNotFoundException ex, WebRequest request) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.FORBIDDEN.value());
+        body.put("error", "You are not authorized");
+        body.put("message", ex.getMessage());
+        body.put("path", request.getDescription(false).substring(4));
+        return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.BAD_REQUEST.value());
+        body.put("error", "Check Username and Password");
+        body.put("message", ex.getMessage());
+        body.put("path", request.getDescription(false).substring(4));
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DuplicateEntityException.class)

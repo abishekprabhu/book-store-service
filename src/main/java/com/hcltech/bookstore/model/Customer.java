@@ -1,5 +1,6 @@
 package com.hcltech.bookstore.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,12 +15,7 @@ public class Customer extends User{
 
     private String name;
 
-
-/*    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_id")
-    private List<Address> addresses;
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
-    private Cart cart;
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Order> orders;*/
+    @OneToMany(mappedBy = "customer")
+    @JsonBackReference
+    private List<PurchasedBook> purchasedBooks;
 }
