@@ -18,6 +18,7 @@ public class JpaUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+        log.info("Attempting to load user by username: {}", username);
         final User user = userRepository.findByUsername(username)
                                         .orElseThrow(() -> new UsernameNotFoundException(username));
 
@@ -27,11 +28,11 @@ public class JpaUserDetailsService implements UserDetailsService {
     private UserDetails toUserDetails(User user) {
 
         final UserDetails userDetails = org.springframework.security.core.userdetails.User.withUsername(
-                                                   user.getUsername())
-                                                                                          .password(user.getPassword())
-                                                                                          .roles(user.getRoles().toArray(new String[0]))
-                .build();
-        log.info("USER DETAILS{}", userDetails);
+                                                    user.getUsername())
+                                                        .password(user.getPassword())
+                                                        .roles(user.getRoles().toArray(new String[0]))
+                                                        .build();
+        log.debug("Converted User entity to UserDetails: {}", userDetails.getUsername());
         return userDetails;
     }
 }

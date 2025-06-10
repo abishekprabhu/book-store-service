@@ -11,6 +11,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface    UserMapper {
+
     Author toAuthor(AuthorRequestDTO dto);
     Customer toCustomer(CustomerRequestDTO dto);
     AuthorResponseDTO toAuthorDTO(Author author);
