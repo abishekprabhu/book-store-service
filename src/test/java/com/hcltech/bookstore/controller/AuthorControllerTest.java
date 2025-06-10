@@ -109,6 +109,4 @@ class AuthorControllerTest {
         mockMvc.perform(delete("/api/v1/author/1"))
                 .andExpect(status().isNoContent());
     }
-
-
 }

@@ -43,14 +43,13 @@ class AuthorServiceImplTest {
         dto.setBiography("Bio");
 
         List<Author> authors = List.of(author);
-        List<AuthorResponseDTO> dtos = List.of(dto);
 
         when(authorServiceDAO.findAll()).thenReturn(authors);
         when(authorMapper.toDTO(any())).thenReturn(dto);
 
         List<AuthorResponseDTO> result = authorService.getAllAuthors();
         assertEquals(1, result.size());
-        assertEquals("Author", result.get(0).getName());
+        assertEquals("Author", result.getFirst().getName());
     }
 
     @Test
