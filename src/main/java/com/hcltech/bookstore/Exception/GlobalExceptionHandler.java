@@ -39,6 +39,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Object> handleGlobalRuntimeException(RuntimeException ex, WebRequest request) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        body.put("error", "INTERNAL_SERVER_ERROR");
+        body.put("message", ex.getMessage());
+        body.put("path", request.getDescription(false).substring(4));
+        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
         Map<String, Object> body = new HashMap<>();
@@ -81,43 +92,6 @@ public class GlobalExceptionHandler {
         body.put("path", request.getDescription(false).substring(4));
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
-
-/*    @ExceptionHandler(Exception.class)
-    public ProblemDetail handleGlobalException(Exception ex, WebRequest request) {
-
-        final ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-        problemDetail.setTitle("INTERNAL_SERVER_ERROR");
-        problemDetail.setDetail("message : "+ex.getMessage());
-        problemDetail.setProperty("reason",ex.getMessage());
-        problemDetail.setStatus(500);
-        problemDetail.setProperty("severity","ERROR");
-
-        return problemDetail;
-    }*/
-
-/*    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ProblemDetail handleValidationException(MethodArgumentNotValidException ex) {
-        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-        problemDetail.setTitle("Validation Failed");
-        problemDetail.setType(URI.create("http://localhost:8080/api/employeeService/v1/employees/validation-error"));
-        problemDetail.setDetail("One or more fields are invalid. See 'errors' for details.");
-        Map<String, String> errorMap = new HashMap<>();
-        for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
-            errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
-        }
-        problemDetail.setProperty("errors", errorMap);
-        // Add custom field errors
-        *//*StringBuilder errorMessages = new StringBuilder();
-        for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
-            errorMessages.append(fieldError.getField())
-                    .append(": ")
-                    .append(fieldError.getDefaultMessage())
-                    .append("; ");
-        }
-
-        problemDetail.setProperty("errors", errorMessages.toString().trim());*//*
-        return problemDetail;
-    }*/
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationException(MethodArgumentNotValidException ex, WebRequest request) {

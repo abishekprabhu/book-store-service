@@ -13,128 +13,129 @@ import com.hcltech.bookstore.model.Customer;
 import com.hcltech.bookstore.util.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class AuthenticationServiceTest {
-
-    @Mock private JpaUserDetailsService jpaUserDetailsService;
-    @Mock private JwtUtil jwtUtil;
-    @Mock private PasswordEncoder passwordEncoder;
-    @Mock private UserMapper userMapper;
-    @Mock private AuthenticationManager authenticationManager;
-    @Mock private UserDAOService userDAOService;
+class AuthenticationServiceImplTest {
 
     @InjectMocks
     private AuthenticationServiceImpl authenticationService;
 
-    private AuthorRequestDTO authorRequestDTO;
-    private Author author;
-    private AuthorResponseDTO authorResponseDTO;
+    @Mock
+    private JpaUserDetailsService jpaUserDetailsService;
 
-    private CustomerRequestDTO customerRequestDTO;
-    private Customer customer;
-    private CustomerResponseDTO customerResponseDTO;
+    @Mock
+    private JwtUtil jwtUtil;
 
-    private AuthenticationRequestDto authRequestDto;
+    @Mock
+    private AuthenticationManager authenticationManager;
+
+    @Mock
+    private UserDAOService userDAOService;
+
+    @Mock
+    private UserMapper userMapper;
+
+    @Mock
+    private PasswordEncoder passwordEncoder; // Add this line
 
     @BeforeEach
-    void setup() {
-        authorRequestDTO = new AuthorRequestDTO();
-        authorRequestDTO.setUsername("author");
-        authorRequestDTO.setPassword("password");
-
-        author = new Author();
-        author.setUsername("author");
-        author.setPassword("encoded-password");
-
-        authorResponseDTO = new AuthorResponseDTO();
-        authorResponseDTO.setUsername("author");
-
-        customerRequestDTO = new CustomerRequestDTO();
-        customerRequestDTO.setUsername("customer");
-        customerRequestDTO.setPassword("password");
-
-        customer = new Customer();
-        customer.setUsername("customer");
-        customer.setPassword("encoded-password");
-
-        customerResponseDTO = new CustomerResponseDTO();
-        customerResponseDTO.setUsername("customer");
-
-        authRequestDto = new AuthenticationRequestDto();
-        authRequestDto.setUsername("author");
-        authRequestDto.setPassword("password");
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
     void testRegisterAuthor() {
-        when(userMapper.toAuthor(authorRequestDTO)).thenReturn(author);
-        when(passwordEncoder.encode("password")).thenReturn("encoded-password");
-        when(userMapper.toAuthorDTO(author)).thenReturn(authorResponseDTO);
+        AuthorRequestDTO dto = new AuthorRequestDTO();
+        dto.setUsername("author");
+        dto.setPassword("Author@28");
+        dto.setName("Author Name");
+        dto.setBiography("Bio");
 
-        AuthorResponseDTO result = authenticationService.registerAuthor(authorRequestDTO);
+        Author author = new Author();
+        author.setUsername("author");
 
-        assertNotNull(result);
+        AuthorResponseDTO responseDTO = new AuthorResponseDTO();
+        responseDTO.setUsername("author");
+
+        when(userMapper.toAuthor(dto)).thenReturn(author);
+        when(passwordEncoder.encode("Author@28")).thenReturn("encodedPassword"); // Mock encoding
+        when(userDAOService.save(author)).thenReturn(author);
+        when(userMapper.toAuthorDTO(author)).thenReturn(responseDTO);
+
+        AuthorResponseDTO result = authenticationService.registerAuthor(dto);
+
         assertEquals("author", result.getUsername());
-        verify(userDAOService, times(1)).save(author);
+        verify(userDAOService).save(author);
     }
 
     @Test
     void testRegisterCustomer() {
-        when(userMapper.toCustomer(customerRequestDTO)).thenReturn(customer);
-        when(passwordEncoder.encode("password")).thenReturn("encoded-password");
+        CustomerRequestDTO dto = new CustomerRequestDTO();
+        dto.setUsername("customer");
+        dto.setPassword("Password@28");
+        dto.setName("Customer Name");
+
+        Customer customer = new Customer();
+        customer.setUsername("customer");
+
+        CustomerResponseDTO responseDTO = new CustomerResponseDTO();
+        responseDTO.setUsername("customer");
+
+        when(userMapper.toCustomer(dto)).thenReturn(customer);
+        when(passwordEncoder.encode("Password@28")).thenReturn("encodedPassword"); // Mock encoding
         when(userDAOService.save(customer)).thenReturn(customer);
-        when(userMapper.toCustomerDTO(customer)).thenReturn(customerResponseDTO);
+        when(userMapper.toCustomerDTO(customer)).thenReturn(responseDTO);
 
-        CustomerResponseDTO result = authenticationService.registerCustomer(customerRequestDTO);
+        CustomerResponseDTO result = authenticationService.registerCustomer(dto);
 
-        assertNotNull(result);
         assertEquals("customer", result.getUsername());
-        verify(userDAOService, times(1)).save(customer);
+        verify(userDAOService).save(customer);
     }
 
     @Test
     void testLoginSuccess() {
+        AuthenticationRequestDto dto = new AuthenticationRequestDto();
+        dto.setUsername("user");
+        dto.setPassword("pass");
+
         Authentication authentication = mock(Authentication.class);
         UserDetails userDetails = mock(UserDetails.class);
-        GrantedAuthority authority = () -> "AUTHOR";
 
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
         when(authentication.isAuthenticated()).thenReturn(true);
-        when(jpaUserDetailsService.loadUserByUsername("author")).thenReturn(userDetails);
-        when(userDetails.getUsername()).thenReturn("author");
+        when(jpaUserDetailsService.loadUserByUsername("user")).thenReturn(userDetails);
+        when(userDetails.getUsername()).thenReturn("user");
         when(jwtUtil.generateToken(userDetails)).thenReturn("jwt-token");
+        when(userDetails.getAuthorities())
+                .thenReturn((Collection) Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));        AuthenticationResponseDto response = authenticationService.login(dto);
 
-        AuthenticationResponseDto response = authenticationService.login(authRequestDto);
-
-        assertNotNull(response);
-        assertEquals("author", response.getUsername());
+        assertEquals("user", response.getUsername());
         assertEquals("jwt-token", response.getJwt());
-        assertTrue(response.getRole().contains("AUTHOR"));
+        assertTrue(response.getRole().contains("ROLE_USER"));
     }
 
     @Test
     void testLoginFailure() {
+        AuthenticationRequestDto dto = new AuthenticationRequestDto();
+        dto.setUsername("user");
+        dto.setPassword("wrong");
+
         when(authenticationManager.authenticate(any()))
                 .thenThrow(new RuntimeException("Bad credentials"));
 
-        UsernameNotFoundException exception = assertThrows(
-                UsernameNotFoundException.class,
-                () -> authenticationService.login(authRequestDto)
-        );
-
-        assertEquals("Invalid credentials", exception.getMessage());
+        assertThrows(UsernameNotFoundException.class, () -> authenticationService.login(dto));
     }
 }

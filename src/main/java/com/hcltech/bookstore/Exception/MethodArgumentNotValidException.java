@@ -2,7 +2,7 @@ package com.hcltech.bookstore.Exception;
 
 import org.springframework.validation.Errors;
 
-public class MethodArgumentNotValidException extends RuntimeException {
+public class MethodArgumentNotValidException extends RuntimeException{
     private final String message;
 
     public MethodArgumentNotValidException(String message) {

@@ -58,7 +58,7 @@ public class SecurityConfiguration {
                         .permitAll()
                         .requestMatchers("/api/v1/author/**").hasRole("AUTHOR")
                         .requestMatchers("/api/v1/customer/**").hasRole("CUSTOMER")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/books").hasRole("CUSTOMER")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/books").hasAnyRole("AUTHOR","CUSTOMER")
                         .requestMatchers("/api/v1/books/**").hasRole("AUTHOR")
                         .requestMatchers("/api/v1/purchases/**").hasRole("CUSTOMER")
                         .anyRequest()
