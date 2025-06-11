@@ -2,8 +2,8 @@ package com.hcltech.bookstore.config;
 
 
 import com.hcltech.bookstore.filter.JwtAuthRequestFilter;
-import com.hcltech.bookstore.service.AuthService.JpaUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.hcltech.bookstore.service.authentication.JpaUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,6 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration {
 
     private static final String[] SWAGGER_WHITE_LIST        = { "/swagger-ui.html",
@@ -38,11 +39,9 @@ public class SecurityConfiguration {
             "/api/v1/auth/login",
             "/api/v1/auth/**" };
 
-    @Autowired
-    private JwtAuthRequestFilter jwtAuthRequestFilter;
+    private final JwtAuthRequestFilter jwtAuthRequestFilter;
 
-    @Autowired
-    private JpaUserDetailsService jpaUserDetailsService;
+    private final JpaUserDetailsService jpaUserDetailsService;
 
 
     @Bean

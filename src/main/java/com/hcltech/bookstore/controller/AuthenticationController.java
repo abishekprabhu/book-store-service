@@ -1,12 +1,12 @@
 package com.hcltech.bookstore.controller;
 
-import com.hcltech.bookstore.dto.AuthenticationDTO.AuthenticationRequestDto;
-import com.hcltech.bookstore.dto.AuthenticationDTO.AuthenticationResponseDto;
-import com.hcltech.bookstore.dto.AuthorDTO.AuthorRequestDTO;
-import com.hcltech.bookstore.dto.AuthorDTO.AuthorResponseDTO;
-import com.hcltech.bookstore.dto.CustomerDTO.CustomerRequestDTO;
-import com.hcltech.bookstore.dto.CustomerDTO.CustomerResponseDTO;
-import com.hcltech.bookstore.service.AuthService.AuthenticationService;
+import com.hcltech.bookstore.dto.customer.CustomerRequestDto;
+import com.hcltech.bookstore.dto.customer.CustomerResponseDto;
+import com.hcltech.bookstore.dto.authentication.AuthenticationRequestDto;
+import com.hcltech.bookstore.dto.authentication.AuthenticationResponseDto;
+import com.hcltech.bookstore.dto.author.AuthorRequestDto;
+import com.hcltech.bookstore.dto.author.AuthorResponseDto;
+import com.hcltech.bookstore.service.authentication.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +20,12 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register/author")
-    public ResponseEntity<AuthorResponseDTO> registerAuthor(@Valid @RequestBody AuthorRequestDTO dto) {
+    public ResponseEntity<AuthorResponseDto> registerAuthor(@Valid @RequestBody AuthorRequestDto dto) {
         return ResponseEntity.ok(authenticationService.registerAuthor(dto));
     }
 
     @PostMapping("/register/customer")
-    public ResponseEntity<CustomerResponseDTO> registerCustomer(@Valid @RequestBody CustomerRequestDTO dto) {
+    public ResponseEntity<CustomerResponseDto> registerCustomer(@Valid @RequestBody CustomerRequestDto dto) {
         return ResponseEntity.ok(authenticationService.registerCustomer(dto));
     }
 

@@ -1,7 +1,7 @@
 package com.hcltech.bookstore.controller;
 
 import com.hcltech.bookstore.config.SecurityTestConfig;
-import com.hcltech.bookstore.dto.BookDTO.BookResponseDTO;
+import com.hcltech.bookstore.dto.book.BookResponseDto;
 import com.hcltech.bookstore.service.book.BookService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,12 +34,12 @@ class BookControllerTest {
     @MockitoBean
     private BookService bookService;
 
-    private BookResponseDTO bookResponseDTO;
+    private BookResponseDto bookResponseDTO;
 
     @BeforeEach
     void setup() {
         String base64Image = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString("image-data".getBytes());
-        bookResponseDTO = new BookResponseDTO(
+        bookResponseDTO = new BookResponseDto(
                 1L,
                 "Test Book",
                 "ISBN123",

@@ -1,7 +1,7 @@
 package com.hcltech.bookstore.controller;
 
-import com.hcltech.bookstore.dto.PurchasedBookDTO.PurchasedBookRequestDTO;
-import com.hcltech.bookstore.dto.PurchasedBookDTO.PurchasedBookResponseDTO;
+import com.hcltech.bookstore.dto.purchased.PurchasedBookRequestDto;
+import com.hcltech.bookstore.dto.purchased.PurchasedBookResponseDto;
 import com.hcltech.bookstore.service.purchase.PurchasedBookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class PurchasedBookController {
     private final PurchasedBookService purchasedBookService;
 
     @PostMapping
-    public ResponseEntity<PurchasedBookResponseDTO> purchaseBook(@RequestBody @Valid PurchasedBookRequestDTO dto) {
+    public ResponseEntity<PurchasedBookResponseDto> purchaseBook(@RequestBody @Valid PurchasedBookRequestDto dto) {
         return ResponseEntity.ok(purchasedBookService.purchaseBook(dto));
     }
 }

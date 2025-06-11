@@ -1,6 +1,6 @@
 package com.hcltech.bookstore.mapper.purchase;
 
-import com.hcltech.bookstore.dto.PurchasedBookDTO.PurchasedBookResponseDTO;
+import com.hcltech.bookstore.dto.purchased.PurchasedBookResponseDto;
 import com.hcltech.bookstore.model.PurchasedBook;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,5 +12,5 @@ public interface PurchasedBookMapper {
     @Mapping(source = "book.title", target = "bookTitle")
     @Mapping(source = "customer.id", target = "customerId")
     @Mapping(source = "customer.name", target = "customerName")
-    PurchasedBookResponseDTO toDTO(PurchasedBook purchasedBook);
+    PurchasedBookResponseDto toDTO(PurchasedBook purchasedBook);
 }

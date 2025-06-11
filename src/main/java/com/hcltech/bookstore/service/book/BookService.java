@@ -1,23 +1,23 @@
 package com.hcltech.bookstore.service.book;
 
-import com.hcltech.bookstore.dto.BookDTO.BookRequestDTO;
-import com.hcltech.bookstore.dto.BookDTO.BookResponseDTO;
+import com.hcltech.bookstore.dto.book.BookRequestDto;
+import com.hcltech.bookstore.dto.book.BookResponseDto;
 
 import java.util.List;
 
 public interface BookService {
 
-    BookResponseDTO createBook(BookRequestDTO bookRequestDTO);
+    BookResponseDto createBook(BookRequestDto bookRequestDTO);
 
-    List<BookResponseDTO> getAllBooks();
+    List<BookResponseDto> getAllBooks();
 
-    BookResponseDTO getBookById(Long id);
+    BookResponseDto getBookById(Long id);
 
-    BookResponseDTO updateBook(Long id, BookRequestDTO bookRequestDTO);
+    BookResponseDto updateBook(Long id, BookRequestDto bookRequestDTO);
 
     void deleteBook(Long id);
 
-    BookResponseDTO assignBookToAuthor(Long bookId, Long authorId);
+    BookResponseDto assignBookToAuthor(Long bookId, Long authorId);
 
     void addStock(Long id, int quantity);
 }

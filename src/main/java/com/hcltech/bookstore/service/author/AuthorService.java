@@ -1,14 +1,14 @@
 package com.hcltech.bookstore.service.author;
 
-import com.hcltech.bookstore.dto.AuthorDTO.AuthorRequestDTO;
-import com.hcltech.bookstore.dto.AuthorDTO.AuthorResponseDTO;
+import com.hcltech.bookstore.dto.author.AuthorRequestDto;
+import com.hcltech.bookstore.dto.author.AuthorResponseDto;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface AuthorService {
-    List<AuthorResponseDTO> getAllAuthors();
-    Optional<AuthorResponseDTO> getAuthorById(Long id);
-    AuthorResponseDTO updateAuthor(Long id, AuthorRequestDTO updatedAuthor);
+    List<AuthorResponseDto> getAllAuthors();
+    Optional<AuthorResponseDto> getAuthorById(Long id);
+    AuthorResponseDto updateAuthor(Long id, AuthorRequestDto updatedAuthor);
     void deleteAuthor(Long id);
 }

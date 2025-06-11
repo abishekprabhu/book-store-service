@@ -1,10 +1,13 @@
 package com.hcltech.bookstore.service.purchase;
 
-import com.hcltech.bookstore.dao.bookDao.BookServiceDAO;
-import com.hcltech.bookstore.dao.customerDao.CustomerServiceDAO;
-import com.hcltech.bookstore.dao.purchasedDao.PurchasedBookDAO;
-import com.hcltech.bookstore.dto.PurchasedBookDTO.PurchasedBookRequestDTO;
-import com.hcltech.bookstore.dto.PurchasedBookDTO.PurchasedBookResponseDTO;
+import com.hcltech.bookstore.exception.BookNotFoundException;
+import com.hcltech.bookstore.exception.EntityNotFoundException;
+import com.hcltech.bookstore.exception.InsufficientStockException;
+import com.hcltech.bookstore.dao.book.BookServiceDao;
+import com.hcltech.bookstore.dao.customer.CustomerServiceDao;
+import com.hcltech.bookstore.dao.purchased.PurchasedBookServiceDao;
+import com.hcltech.bookstore.dto.purchased.PurchasedBookRequestDto;
+import com.hcltech.bookstore.dto.purchased.PurchasedBookResponseDto;
 import com.hcltech.bookstore.mapper.purchase.PurchasedBookMapper;
 import com.hcltech.bookstore.model.Book;
 import com.hcltech.bookstore.model.Customer;
@@ -18,21 +21,21 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class PurchasedBookServiceImpl implements PurchasedBookService{
 
-    private final BookServiceDAO bookServiceDAO;
-    private final CustomerServiceDAO customerServiceDAO;
-    private final PurchasedBookDAO purchasedBookDAO;
+    private final BookServiceDao bookServiceDAO;
+    private final CustomerServiceDao customerServiceDAO;
+    private final PurchasedBookServiceDao purchasedBookServiceDAO;
     private final PurchasedBookMapper purchasedBookMapper;
 
-    public PurchasedBookResponseDTO purchaseBook(PurchasedBookRequestDTO dto) {
+    public PurchasedBookResponseDto purchaseBook(PurchasedBookRequestDto dto) {
         Book book = bookServiceDAO.findById(dto.getBookId())
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() -> new BookNotFoundException("Book not found"));
 
         if (book.getStock() < dto.getQuantity()) {
-            throw new IllegalStateException("Not enough stock available");
+            throw new InsufficientStockException("Not enough stock available");
         }
 
         Customer customer = customerServiceDAO.findById(dto.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
 
         // Reduce stock
         book.setStock(book.getStock() - dto.getQuantity());
@@ -44,6 +47,6 @@ public class PurchasedBookServiceImpl implements PurchasedBookService{
         purchase.setQuantity(dto.getQuantity());
         purchase.setPurchaseDate(LocalDateTime.now());
 
-        return purchasedBookMapper.toDTO(purchasedBookDAO.save(purchase));
+        return purchasedBookMapper.toDTO(purchasedBookServiceDAO.save(purchase));
     }
 }

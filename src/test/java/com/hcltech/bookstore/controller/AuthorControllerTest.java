@@ -1,10 +1,9 @@
 package com.hcltech.bookstore.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hcltech.bookstore.Exception.EntityNotFoundException;
 import com.hcltech.bookstore.config.SecurityTestConfig;
-import com.hcltech.bookstore.dto.AuthorDTO.AuthorRequestDTO;
-import com.hcltech.bookstore.dto.AuthorDTO.AuthorResponseDTO;
+import com.hcltech.bookstore.dto.author.AuthorRequestDto;
+import com.hcltech.bookstore.dto.author.AuthorResponseDto;
 import com.hcltech.bookstore.service.author.AuthorService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,7 @@ class AuthorControllerTest {
 
     @Test
     void testGetAllAuthors() throws Exception {
-        List<AuthorResponseDTO> authors = List.of(new AuthorResponseDTO());
+        List<AuthorResponseDto> authors = List.of(new AuthorResponseDto());
         authors.get(0).setUsername("author1");
         authors.get(0).setName("Author 1");
         authors.get(0).setBiography("Bio 1");
@@ -56,7 +55,7 @@ class AuthorControllerTest {
 
     @Test
     void testGetAuthorById_Found() throws Exception {
-        AuthorResponseDTO author = new AuthorResponseDTO();
+        AuthorResponseDto author = new AuthorResponseDto();
         author.setUsername("author1");
         author.setName("Author 1");
         author.setBiography("Bio 1");
@@ -80,13 +79,13 @@ class AuthorControllerTest {
 
     @Test
     void testUpdateAuthor() throws Exception {
-        AuthorRequestDTO request = new AuthorRequestDTO();
+        AuthorRequestDto request = new AuthorRequestDto();
         request.setUsername("author1");
         request.setPassword("Password@1");
         request.setName("Updated Author");
         request.setBiography("Updated Bio");
 
-        AuthorResponseDTO response = new AuthorResponseDTO();
+        AuthorResponseDto response = new AuthorResponseDto();
         response.setUsername("author1");
         response.setName("Updated Author");
         response.setBiography("Updated Bio");

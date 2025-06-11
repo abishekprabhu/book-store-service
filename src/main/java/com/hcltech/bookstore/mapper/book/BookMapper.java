@@ -1,9 +1,9 @@
 
 package com.hcltech.bookstore.mapper.book;
 
-import com.hcltech.bookstore.Exception.CustomException;
-import com.hcltech.bookstore.dto.BookDTO.BookRequestDTO;
-import com.hcltech.bookstore.dto.BookDTO.BookResponseDTO;
+import com.hcltech.bookstore.exception.CustomException;
+import com.hcltech.bookstore.dto.book.BookRequestDto;
+import com.hcltech.bookstore.dto.book.BookResponseDto;
 import com.hcltech.bookstore.model.Book;
 import org.mapstruct.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,11 +17,11 @@ public interface BookMapper {
     @Mapping(target = "imageUrl", expression = "java(toBase64Image(book.getImg()))")
     @Mapping(source = "author.id", target = "authorId")
     @Mapping(source = "author.name", target = "authorName")
-    BookResponseDTO toDTO(Book book);
+    BookResponseDto toDTO(Book book);
 
     @Mapping(target = "img", source = "img", qualifiedByName = "multipartToBytes")
 //    @Mapping(source = "authorId", target = "author.id")
-    Book toEntity(BookRequestDTO bookDTO);
+    Book toEntity(BookRequestDto bookDTO);
 
     @Named("multipartToBytes")
     static byte[] multipartToBytes(MultipartFile file) {

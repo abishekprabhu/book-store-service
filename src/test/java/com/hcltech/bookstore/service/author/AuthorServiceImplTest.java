@@ -1,8 +1,8 @@
 package com.hcltech.bookstore.service.author;
 
-import com.hcltech.bookstore.dao.authorDao.AuthorServiceDAO;
-import com.hcltech.bookstore.dto.AuthorDTO.AuthorRequestDTO;
-import com.hcltech.bookstore.dto.AuthorDTO.AuthorResponseDTO;
+import com.hcltech.bookstore.dao.author.AuthorServiceDao;
+import com.hcltech.bookstore.dto.author.AuthorRequestDto;
+import com.hcltech.bookstore.dto.author.AuthorResponseDto;
 import com.hcltech.bookstore.mapper.author.AuthorMapper;
 import com.hcltech.bookstore.model.Author;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ class AuthorServiceImplTest {
     @InjectMocks
     private AuthorServiceImpl authorService;
     @Mock
-    private AuthorServiceDAO authorServiceDAO;
+    private AuthorServiceDao authorServiceDAO;
     @Mock
     private AuthorMapper authorMapper;
 
@@ -37,7 +37,7 @@ class AuthorServiceImplTest {
         author.setBiography("Bio");
         author.setBooks(List.of());
 
-        AuthorResponseDTO dto = new AuthorResponseDTO();
+        AuthorResponseDto dto = new AuthorResponseDto();
         dto.setUsername("author1");
         dto.setName("Author");
         dto.setBiography("Bio");
@@ -47,7 +47,7 @@ class AuthorServiceImplTest {
         when(authorServiceDAO.findAll()).thenReturn(authors);
         when(authorMapper.toDTO(any())).thenReturn(dto);
 
-        List<AuthorResponseDTO> result = authorService.getAllAuthors();
+        List<AuthorResponseDto> result = authorService.getAllAuthors();
         assertEquals(1, result.size());
         assertEquals("Author", result.getFirst().getName());
     }
@@ -60,7 +60,7 @@ class AuthorServiceImplTest {
         author.setBiography("Bio");
         author.setBooks(List.of());
 
-        AuthorResponseDTO dto = new AuthorResponseDTO();
+        AuthorResponseDto dto = new AuthorResponseDto();
         dto.setUsername("author1");
         dto.setName("Author");
         dto.setBiography("Bio");
@@ -68,7 +68,7 @@ class AuthorServiceImplTest {
         when(authorServiceDAO.findById(1L)).thenReturn(Optional.of(author));
         when(authorMapper.toDTO(author)).thenReturn(dto);
 
-        Optional<AuthorResponseDTO> result = authorService.getAuthorById(1L);
+        Optional<AuthorResponseDto> result = authorService.getAuthorById(1L);
         assertTrue(result.isPresent());
         assertEquals("Author", result.get().getName());
     }
@@ -81,7 +81,7 @@ class AuthorServiceImplTest {
         author.setBiography("Old Bio");
         author.setBooks(List.of());
 
-        AuthorRequestDTO requestDTO = new AuthorRequestDTO();
+        AuthorRequestDto requestDTO = new AuthorRequestDto();
         requestDTO.setUsername("author1");
         requestDTO.setPassword("Password@1");
         requestDTO.setName("New");
@@ -93,7 +93,7 @@ class AuthorServiceImplTest {
         updatedAuthor.setBiography("New Bio");
         updatedAuthor.setBooks(List.of());
 
-        AuthorResponseDTO responseDTO = new AuthorResponseDTO();
+        AuthorResponseDto responseDTO = new AuthorResponseDto();
         responseDTO.setUsername("author1");
         responseDTO.setName("New");
         responseDTO.setBiography("New Bio");
@@ -102,7 +102,7 @@ class AuthorServiceImplTest {
         when(authorServiceDAO.save(any())).thenReturn(updatedAuthor);
         when(authorMapper.toDTO(updatedAuthor)).thenReturn(responseDTO);
 
-        AuthorResponseDTO result = authorService.updateAuthor(1L, requestDTO);
+        AuthorResponseDto result = authorService.updateAuthor(1L, requestDTO);
         assertEquals("New", result.getName());
     }
 

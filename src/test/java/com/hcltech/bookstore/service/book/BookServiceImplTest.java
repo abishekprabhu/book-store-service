@@ -1,10 +1,10 @@
 package com.hcltech.bookstore.service.book;
 
-import com.hcltech.bookstore.Exception.EntityNotFoundException;
-import com.hcltech.bookstore.dao.authorDao.AuthorServiceDAO;
-import com.hcltech.bookstore.dao.bookDao.BookServiceDAO;
-import com.hcltech.bookstore.dto.BookDTO.BookRequestDTO;
-import com.hcltech.bookstore.dto.BookDTO.BookResponseDTO;
+import com.hcltech.bookstore.exception.EntityNotFoundException;
+import com.hcltech.bookstore.dao.author.AuthorServiceDao;
+import com.hcltech.bookstore.dao.book.BookServiceDao;
+import com.hcltech.bookstore.dto.book.BookRequestDto;
+import com.hcltech.bookstore.dto.book.BookResponseDto;
 import com.hcltech.bookstore.mapper.book.BookMapper;
 import com.hcltech.bookstore.model.Author;
 
@@ -26,10 +26,10 @@ import static org.mockito.Mockito.*;
 class BookServiceImplTest {
 
     @Mock
-    private AuthorServiceDAO authorServiceDAO;
+    private AuthorServiceDao authorServiceDAO;
 
     @Mock
-    private BookServiceDAO bookServiceDAO;
+    private BookServiceDao bookServiceDAO;
 
     @Mock
     private BookMapper bookMapper;
@@ -37,14 +37,14 @@ class BookServiceImplTest {
     @InjectMocks
     private BookServiceImpl bookService;
 
-    private BookRequestDTO bookRequestDTO;
+    private BookRequestDto bookRequestDTO;
     private Book book;
     private Author author;
-    private BookResponseDTO bookResponseDTO;
+    private BookResponseDto bookResponseDTO;
 
     @BeforeEach
     void setUp() {
-        bookRequestDTO = new BookRequestDTO(
+        bookRequestDTO = new BookRequestDto(
                 "Sample Book",
                 "ISBN123",
                 199.99,
@@ -67,7 +67,7 @@ class BookServiceImplTest {
         book.setDescription("Great book");
         book.setAuthor(author);
 
-        bookResponseDTO = new BookResponseDTO(1L, "Sample Book", "ISBN123", 199.99, 10, "Great book", 1L, "John Doe", null);
+        bookResponseDTO = new BookResponseDto(1L, "Sample Book", "ISBN123", 199.99, 10, "Great book", 1L, "John Doe", null);
     }
 
     @Test
@@ -77,7 +77,7 @@ class BookServiceImplTest {
         when(bookServiceDAO.save(any(Book.class))).thenReturn(book);
         when(bookMapper.toDTO(any(Book.class))).thenReturn(bookResponseDTO);
 
-        BookResponseDTO result = bookService.createBook(bookRequestDTO);
+        BookResponseDto result = bookService.createBook(bookRequestDTO);
 
         assertNotNull(result);
         assertEquals("Sample Book", result.getTitle());
@@ -89,7 +89,7 @@ class BookServiceImplTest {
         when(bookServiceDAO.findAll()).thenReturn(List.of(book));
         when(bookMapper.toDTO(any(Book.class))).thenReturn(bookResponseDTO);
 
-        List<BookResponseDTO> result = bookService.getAllBooks();
+        List<BookResponseDto> result = bookService.getAllBooks();
 
         assertEquals(1, result.size());
         assertEquals("Sample Book", result.get(0).getTitle());
@@ -100,7 +100,7 @@ class BookServiceImplTest {
         when(bookServiceDAO.findById(1L)).thenReturn(Optional.of(book));
         when(bookMapper.toDTO(book)).thenReturn(bookResponseDTO);
 
-        BookResponseDTO result = bookService.getBookById(1L);
+        BookResponseDto result = bookService.getBookById(1L);
 
         assertEquals("Sample Book", result.getTitle());
     }
@@ -112,7 +112,7 @@ class BookServiceImplTest {
         when(bookServiceDAO.save(any(Book.class))).thenReturn(book);
         when(bookMapper.toDTO(book)).thenReturn(bookResponseDTO);
 
-        BookResponseDTO result = bookService.updateBook(1L, bookRequestDTO);
+        BookResponseDto result = bookService.updateBook(1L, bookRequestDTO);
 
         assertEquals("Sample Book", result.getTitle());
         verify(bookServiceDAO, times(1)).save(any(Book.class));
@@ -144,7 +144,7 @@ class BookServiceImplTest {
         when(bookServiceDAO.save(book)).thenReturn(book);
         when(bookMapper.toDTO(book)).thenReturn(bookResponseDTO);
 
-        BookResponseDTO result = bookService.assignBookToAuthor(1L, 1L);
+        BookResponseDto result = bookService.assignBookToAuthor(1L, 1L);
 
         assertEquals("Sample Book", result.getTitle());
         assertEquals("John Doe", result.getAuthorName());

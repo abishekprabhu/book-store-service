@@ -1,8 +1,8 @@
 package com.hcltech.bookstore.service.purchase;
 
-import com.hcltech.bookstore.dto.PurchasedBookDTO.PurchasedBookRequestDTO;
-import com.hcltech.bookstore.dto.PurchasedBookDTO.PurchasedBookResponseDTO;
+import com.hcltech.bookstore.dto.purchased.PurchasedBookRequestDto;
+import com.hcltech.bookstore.dto.purchased.PurchasedBookResponseDto;
 
 public interface PurchasedBookService {
-    PurchasedBookResponseDTO purchaseBook(PurchasedBookRequestDTO dto);
+    PurchasedBookResponseDto purchaseBook(PurchasedBookRequestDto dto);
 }

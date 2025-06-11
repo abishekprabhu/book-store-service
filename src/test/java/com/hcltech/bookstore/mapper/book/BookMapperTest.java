@@ -1,8 +1,8 @@
 package com.hcltech.bookstore.mapper.book;
 
-import com.hcltech.bookstore.Exception.CustomException;
-import com.hcltech.bookstore.dto.BookDTO.BookRequestDTO;
-import com.hcltech.bookstore.dto.BookDTO.BookResponseDTO;
+import com.hcltech.bookstore.exception.CustomException;
+import com.hcltech.bookstore.dto.book.BookRequestDto;
+import com.hcltech.bookstore.dto.book.BookResponseDto;
 import com.hcltech.bookstore.model.Author;
 import com.hcltech.bookstore.model.Book;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class BookMapperTest {
         author.setId(100L);
         author.setName("John Doe");
         book.setAuthor(author);
-        BookResponseDTO dto = bookMapper.toDTO(book);
+        BookResponseDto dto = bookMapper.toDTO(book);
         assertEquals("Spring Boot", dto.getTitle());
         assertEquals("12345", dto.getIsbn());
         assertEquals(199.99, dto.getPrice());
@@ -47,7 +47,7 @@ class BookMapperTest {
     void testToEntity_withImage() {
         byte[] imageBytes = "Mock Image Content".getBytes();
         MockMultipartFile mockMultipartFile = new MockMultipartFile("img", "image.jpg", "image/jpeg", imageBytes);
-        BookRequestDTO dto = new BookRequestDTO();
+        BookRequestDto dto = new BookRequestDto();
         dto.setTitle("New Book");
         dto.setIsbn("ISBN001");
         dto.setPrice(29.99);

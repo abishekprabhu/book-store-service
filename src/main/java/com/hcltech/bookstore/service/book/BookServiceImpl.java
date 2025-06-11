@@ -1,10 +1,11 @@
 package com.hcltech.bookstore.service.book;
 
-import com.hcltech.bookstore.Exception.EntityNotFoundException;
-import com.hcltech.bookstore.dao.authorDao.AuthorServiceDAO;
-import com.hcltech.bookstore.dao.bookDao.BookServiceDAO;
-import com.hcltech.bookstore.dto.BookDTO.BookRequestDTO;
-import com.hcltech.bookstore.dto.BookDTO.BookResponseDTO;
+import com.hcltech.bookstore.exception.CustomException;
+import com.hcltech.bookstore.exception.EntityNotFoundException;
+import com.hcltech.bookstore.dao.author.AuthorServiceDao;
+import com.hcltech.bookstore.dao.book.BookServiceDao;
+import com.hcltech.bookstore.dto.book.BookRequestDto;
+import com.hcltech.bookstore.dto.book.BookResponseDto;
 import com.hcltech.bookstore.mapper.book.BookMapper;
 import com.hcltech.bookstore.model.Author;
 import com.hcltech.bookstore.model.Book;
@@ -14,15 +15,14 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class BookServiceImpl implements BookService {
 
-    private final AuthorServiceDAO authorServiceDAO;
-    private final BookServiceDAO bookServiceDAO;
+    private final AuthorServiceDao authorServiceDAO;
+    private final BookServiceDao bookServiceDAO;
     private final BookMapper bookMapper;
 
     private static final String AUTHOR_NOT_FOUND = "Author not found";
@@ -30,7 +30,7 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public BookResponseDTO createBook(BookRequestDTO bookRequestDTO) {
+    public BookResponseDto createBook(BookRequestDto bookRequestDTO) {
         log.info("Creating new book with title: {}", bookRequestDTO.getTitle());
 
         Book book = bookMapper.toEntity(bookRequestDTO);
@@ -55,16 +55,16 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookResponseDTO> getAllBooks() {
+    public List<BookResponseDto> getAllBooks() {
         log.info("Fetching all books");
         return bookServiceDAO.findAll()
                 .stream()
                 .map(bookMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
-    public BookResponseDTO getBookById(Long id) {
+    public BookResponseDto getBookById(Long id) {
         log.info("Fetching book with ID: {}", id);
         Book book = bookServiceDAO.findById(id)
                 .orElseThrow(() -> {
@@ -75,7 +75,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookResponseDTO updateBook(Long id, BookRequestDTO dto) {
+    public BookResponseDto updateBook(Long id, BookRequestDto dto) {
         Book book = bookServiceDAO.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND));
 
@@ -99,7 +99,7 @@ public class BookServiceImpl implements BookService {
             try {
                 book.setImg(dto.getImg().getBytes());
             } catch (IOException e) {
-                throw new RuntimeException("Failed to update image", e);
+                throw new CustomException("Failed to update image" + e);
             }
         }else{
             book.setImg(null);
@@ -125,7 +125,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookResponseDTO assignBookToAuthor(Long bookId, Long authorId) {
+    public BookResponseDto assignBookToAuthor(Long bookId, Long authorId) {
         Book book = bookServiceDAO.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND));
 

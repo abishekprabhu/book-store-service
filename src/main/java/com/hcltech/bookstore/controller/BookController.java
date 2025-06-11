@@ -1,7 +1,7 @@
 package com.hcltech.bookstore.controller;
 
-import com.hcltech.bookstore.dto.BookDTO.BookRequestDTO;
-import com.hcltech.bookstore.dto.BookDTO.BookResponseDTO;
+import com.hcltech.bookstore.dto.book.BookRequestDto;
+import com.hcltech.bookstore.dto.book.BookResponseDto;
 import com.hcltech.bookstore.service.book.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,23 +20,23 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<BookResponseDTO>  createBook(@ModelAttribute @Valid BookRequestDTO bookRequestDTO) {
+    public ResponseEntity<BookResponseDto>  createBook(@Valid BookRequestDto bookRequestDTO) {
         return new ResponseEntity<>(bookService.createBook(bookRequestDTO), HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<BookResponseDTO>> getAllBooks() {
+    public ResponseEntity<List<BookResponseDto>> getAllBooks() {
         return ResponseEntity.ok(bookService.getAllBooks());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookResponseDTO> getBookById(@PathVariable Long id) {
+    public ResponseEntity<BookResponseDto> getBookById(@PathVariable Long id) {
         return ResponseEntity.ok(bookService.getBookById(id));
     }
 
     @GetMapping("/{id}/image")
     public ResponseEntity<byte[]> getBookImage(@PathVariable Long id) {
-        BookResponseDTO book = bookService.getBookById(id);
+        BookResponseDto book = bookService.getBookById(id);
         if (book.getImageUrl() == null) {
             return ResponseEntity.notFound().build();
         }
@@ -49,9 +49,9 @@ public class BookController {
 
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<BookResponseDTO> updateBook(
+    public ResponseEntity<BookResponseDto> updateBook(
             @PathVariable Long id,
-            @ModelAttribute @Valid BookRequestDTO bookRequestDTO) {
+            @Valid BookRequestDto bookRequestDTO) {
         return ResponseEntity.ok(bookService.updateBook(id, bookRequestDTO));
     }
 
@@ -68,7 +68,7 @@ public class BookController {
     }
 
     @PatchMapping("/{bookId}/assign-author/{authorId}")
-    public ResponseEntity<BookResponseDTO> assignBookToAuthor(
+    public ResponseEntity<BookResponseDto> assignBookToAuthor(
             @PathVariable Long bookId,
             @PathVariable Long authorId) {
         return ResponseEntity.ok(bookService.assignBookToAuthor(bookId, authorId));

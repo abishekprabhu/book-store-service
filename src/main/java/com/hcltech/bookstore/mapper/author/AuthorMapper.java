@@ -1,7 +1,7 @@
 package com.hcltech.bookstore.mapper.author;
 
-import com.hcltech.bookstore.dto.AuthorDTO.AuthorResponseDTO;
-import com.hcltech.bookstore.dto.BookDTO.BookSummaryDTO;
+import com.hcltech.bookstore.dto.author.AuthorResponseDto;
+import com.hcltech.bookstore.dto.book.BookSummaryDto;
 import com.hcltech.bookstore.model.Author;
 import com.hcltech.bookstore.model.Book;
 import org.mapstruct.Mapper;
@@ -13,10 +13,10 @@ import java.util.Base64;
 public interface AuthorMapper {
 
     @Mapping(target = "books", source = "books")
-    AuthorResponseDTO toDTO(Author author);
+    AuthorResponseDto toDTO(Author author);
 
     @Mapping(target = "imageUrl", expression = "java(toBase64Image(book.getImg()))")
-    BookSummaryDTO toBookSummary(Book book);
+    BookSummaryDto toBookSummary(Book book);
 
     default String toBase64Image(byte[] img) {
         if (img == null) return null;

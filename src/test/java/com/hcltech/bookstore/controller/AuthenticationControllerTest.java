@@ -1,13 +1,13 @@
 package com.hcltech.bookstore.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hcltech.bookstore.dto.AuthenticationDTO.AuthenticationRequestDto;
-import com.hcltech.bookstore.dto.AuthenticationDTO.AuthenticationResponseDto;
-import com.hcltech.bookstore.dto.AuthorDTO.AuthorRequestDTO;
-import com.hcltech.bookstore.dto.AuthorDTO.AuthorResponseDTO;
-import com.hcltech.bookstore.dto.CustomerDTO.CustomerRequestDTO;
-import com.hcltech.bookstore.dto.CustomerDTO.CustomerResponseDTO;
-import com.hcltech.bookstore.service.AuthService.AuthenticationService;
+import com.hcltech.bookstore.dto.customer.CustomerRequestDto;
+import com.hcltech.bookstore.dto.customer.CustomerResponseDto;
+import com.hcltech.bookstore.dto.authentication.AuthenticationRequestDto;
+import com.hcltech.bookstore.dto.authentication.AuthenticationResponseDto;
+import com.hcltech.bookstore.dto.author.AuthorRequestDto;
+import com.hcltech.bookstore.dto.author.AuthorResponseDto;
+import com.hcltech.bookstore.service.authentication.AuthenticationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AuthenticationControllerTest {
+class AuthenticationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,32 +37,32 @@ public class AuthenticationControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private AuthorRequestDTO authorRequestDTO;
-    private AuthorResponseDTO authorResponseDTO;
-    private CustomerRequestDTO customerRequestDTO;
-    private CustomerResponseDTO customerResponseDTO;
+    private AuthorRequestDto authorRequestDTO;
+    private AuthorResponseDto authorResponseDTO;
+    private CustomerRequestDto customerRequestDTO;
+    private CustomerResponseDto customerResponseDTO;
     private AuthenticationRequestDto authRequestDto;
     private AuthenticationResponseDto authResponseDto;
 
     @BeforeEach
     void setUp() {
-        authorRequestDTO = new AuthorRequestDTO();
+        authorRequestDTO = new AuthorRequestDto();
         authorRequestDTO.setUsername("author");
         authorRequestDTO.setPassword("Author@28");
         authorRequestDTO.setName("Author Name");
         authorRequestDTO.setBiography("Biography of the author");
 
-        authorResponseDTO = new AuthorResponseDTO();
+        authorResponseDTO = new AuthorResponseDto();
         authorResponseDTO.setUsername("author");
         authorRequestDTO.setName("Author Name");
         authorRequestDTO.setBiography("Biography of the author");
 
-        customerRequestDTO = new CustomerRequestDTO();
+        customerRequestDTO = new CustomerRequestDto();
         customerRequestDTO.setUsername("customer");
         customerRequestDTO.setPassword("Password@28");
         customerRequestDTO.setName("Customer Name");
 
-        customerResponseDTO = new CustomerResponseDTO();
+        customerResponseDTO = new CustomerResponseDto();
         customerResponseDTO.setUsername("customer");
         customerResponseDTO.setName("Customer Name");
         customerResponseDTO.setRoles(Set.of("CUSTOMER"));
