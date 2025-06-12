@@ -55,10 +55,4 @@ class CustomerServiceDaoImplTest {
         assertEquals("Jane Doe", saved.getName());
     }
 
-/*    @Test
-    void testDelete() {
-        doNothing().when(customerRepository).delete(customer);
-        customerServiceDAO.delete(customer);
-        verify(customerRepository, times(1)).delete(customer);
-    }*/
 }

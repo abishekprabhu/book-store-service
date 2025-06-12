@@ -71,6 +71,6 @@ class JwtUtilTest {
         Map<String, Object> claims = new HashMap<>();
         String token = ReflectionTestUtils.invokeMethod(jwtUtil, "createToken", claims, "john_doe");
         assertNotNull(token);
-        assertTrue(token.length() > 0);
+        assertFalse(token.isEmpty());
     }
 }

@@ -1,12 +1,11 @@
 package com.hcltech.bookstore.exception;
 
-import com.hcltech.bookstore.exception.UsernameNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class UsernameNotFoundExceptionTest {
+class UsernameNotFoundExceptionTest {
     @Test
     void testConstructorAndMessage() {
         String errorMessage = "User 'testUser' not found.";

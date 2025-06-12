@@ -1,6 +1,5 @@
 package com.hcltech.bookstore.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,8 +18,4 @@ public class Customer extends User{
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchasedBook> purchasedBooks;
-
-
-/*    @OneToMany(mappedBy = "customer")
-    private List<PurchasedBook> purchasedBooks;*/
 }

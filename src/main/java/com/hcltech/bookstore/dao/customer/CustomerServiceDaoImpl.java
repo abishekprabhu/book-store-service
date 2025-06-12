@@ -18,10 +18,6 @@ public class CustomerServiceDaoImpl implements CustomerServiceDao {
     public Optional<Customer> findById(Long id) {
         return customerRepository.findById(id);
     }
-/*    @Override
-    public Optional<Customer> findByUsername(String username) {
-        return customerRepository.findByUsername(username);
-    }*/
     @Override
     public Customer save(Customer customer) {
         return customerRepository.save(customer);

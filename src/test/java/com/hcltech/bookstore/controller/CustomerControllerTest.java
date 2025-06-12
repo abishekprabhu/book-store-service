@@ -6,7 +6,6 @@ import com.hcltech.bookstore.dto.customer.CustomerResponseDto;
 import com.hcltech.bookstore.service.customer.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -26,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(CustomerController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(classes ={ CustomerController.class , SecurityException.class })
-public class CustomerControllerTest {
+class CustomerControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
@@ -61,15 +60,6 @@ public class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1));
     }
-/*    @Test
-    void testUpdateCustomer() throws Exception {
-        when(customerService.update(Mockito.eq(1L), any())).thenReturn(responseDto);
-        mockMvc.perform(put("/api/v1/customers/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("john_doe"));
-    }*/
 
     @Test
     void testUpdateCustomer() throws Exception {

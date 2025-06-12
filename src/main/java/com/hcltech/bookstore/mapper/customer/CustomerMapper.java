@@ -18,7 +18,4 @@ public interface CustomerMapper {
     CustomerResponseDto toDto(Customer customer);
 
     List<CustomerResponseDto> toDtoList(List<Customer> customers);
-
-  /*  @Mapping(source = "purchasedBooks", target = "purchasedBooks")
-    CustomerResponseWithPurchasesDto toCustomerWithPurchasesDto(Customer customer);*/
 }

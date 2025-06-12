@@ -19,10 +19,7 @@ class MethodArgumentNotValidExceptionTest {
         String errorMessage = "Validation failed";
         MethodArgumentNotValidException exception = new MethodArgumentNotValidException(errorMessage);
 
-        // Verify that calling getBindingResult() throws UnsupportedOperationException
-        UnsupportedOperationException thrown = assertThrows(UnsupportedOperationException.class, () -> {
-            exception.getBindingResult();
-        });
+        UnsupportedOperationException thrown = assertThrows(UnsupportedOperationException.class, exception::getBindingResult);
 
         assertEquals("BindingResult is not available in this context.", thrown.getMessage());
     }

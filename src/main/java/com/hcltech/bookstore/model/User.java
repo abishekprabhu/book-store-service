@@ -31,11 +31,8 @@ public abstract class User {
     @Column(name = "role")
     private Set<String> roles; //["AUTHOR",CUSTOMER"]
 
-/*    @Column(name = "roles")
-    private String roles;*/
 
-
-    public User(final String username, final String password, final Set<String> roles) {
+    protected User(final String username, final String password, final Set<String> roles) {
         this.username = username;
         this.password = password;
         this.roles = roles;

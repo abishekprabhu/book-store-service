@@ -44,8 +44,6 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerResponseDto update(Long id, CustomerRequestDto dto) {
         Customer customer = customerServiceDAO.findById(id).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
         customer.setName(dto.getName());
-/*        customer.setUsername(dto.getUsername());
-        customer.setPassword(passwordEncoder.encode(dto.getPassword()));*/
         return customerMapper.toDto(customerServiceDAO.save(customer));
     }
 

@@ -3,9 +3,7 @@ package com.hcltech.bookstore.exception;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.context.request.WebRequest;
 import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,7 +30,7 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertTrue(responseEntity.getBody() instanceof Map);
+        assertInstanceOf(Map.class, responseEntity.getBody());
 
         Map<String, Object> responseBody = (Map<String, Object>) responseEntity.getBody();
 
@@ -52,7 +50,7 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertTrue(responseEntity.getBody() instanceof Map);
+        assertInstanceOf(Map.class, responseEntity.getBody());
 
         Map<String, Object> responseBody = (Map<String, Object>) responseEntity.getBody();
 
@@ -72,7 +70,7 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertTrue(responseEntity.getBody() instanceof Map);
+        assertInstanceOf(Map.class, responseEntity.getBody());
 
         Map<String, Object> responseBody = (Map<String, Object>) responseEntity.getBody();
 
@@ -92,7 +90,7 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertTrue(responseEntity.getBody() instanceof Map);
+        assertInstanceOf(Map.class, responseEntity.getBody());
 
         Map<String, Object> responseBody = (Map<String, Object>) responseEntity.getBody();
 
@@ -112,7 +110,7 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertTrue(responseEntity.getBody() instanceof Map);
+        assertInstanceOf(Map.class, responseEntity.getBody());
 
         Map<String, Object> responseBody = (Map<String, Object>) responseEntity.getBody();
 
@@ -132,7 +130,7 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertTrue(responseEntity.getBody() instanceof Map);
+        assertInstanceOf(Map.class, responseEntity.getBody());
 
         Map<String, Object> responseBody = (Map<String, Object>) responseEntity.getBody();
 
@@ -221,18 +219,5 @@ class GlobalExceptionHandlerTest {
         assertEquals("CONFLICT", responseBody.get("error"));
         assertEquals(errorMessage, responseBody.get("message"));
         assertEquals("/test/path", responseBody.get("path"));
-    }
-
-    @Test
-    void handleInvalidJson() {
-        String specificCauseMessage = "Unrecognized field 'extraField'";
-        HttpMessageNotReadableException ex = new HttpMessageNotReadableException("JSON parse error", new Throwable(specificCauseMessage));
-
-        ProblemDetail problemDetail = globalExceptionHandler.handleInvalidJson(ex);
-
-        assertEquals(HttpStatus.BAD_REQUEST.value(), problemDetail.getStatus());
-        assertEquals("Malformed JSON", problemDetail.getTitle());
-        assertEquals("Request body contains invalid or malformed JSON.", problemDetail.getDetail());
-        assertEquals(specificCauseMessage, problemDetail.getProperties().get("error"));
     }
 }

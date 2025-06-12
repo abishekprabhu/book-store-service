@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface CustomerServiceDao {
     Optional<Customer> findById(Long id);
-//    Optional<Customer> findByUsername(String username);
     Customer save(Customer customer);
     void deleteById(Long id);
     List<Customer> findAll();

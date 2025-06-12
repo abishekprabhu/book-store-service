@@ -29,7 +29,7 @@ public class UserServiceDaoImpl implements UserServiceDao {
     public User findByUsername(String username) {
         return authorRepository.findByUsername(username)
                 .map(User.class::cast)
-                .orElseGet(() -> (User) customerRepository.findByUsername(username).orElse(null));
+                .orElseGet(() -> customerRepository.findByUsername(username).orElse(null));
     }
 
 }

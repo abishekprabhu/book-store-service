@@ -25,7 +25,6 @@ public class GlobalExceptionHandler {
         body.put("path", request.getDescription(false).substring(4));  // Extract URI from the request
 
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-//        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

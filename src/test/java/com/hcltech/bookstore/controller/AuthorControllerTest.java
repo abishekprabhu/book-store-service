@@ -40,13 +40,13 @@ class AuthorControllerTest {
     @Test
     void testGetAllAuthors() throws Exception {
         List<AuthorResponseDto> authors = List.of(new AuthorResponseDto());
-        authors.get(0).setUsername("author1");
-        authors.get(0).setName("Author 1");
-        authors.get(0).setBiography("Bio 1");
+        authors.getFirst().setUsername("author1");
+        authors.getFirst().setName("Author 1");
+        authors.getFirst().setBiography("Bio 1");
 
         when(authorService.getAllAuthors()).thenReturn(authors);
 
-        mockMvc.perform(get("/api/v1/author"))
+        mockMvc.perform(get("/api/v1/authors"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].username").value("author1"))
                 .andExpect(jsonPath("$[0].name").value("Author 1"))
@@ -62,7 +62,7 @@ class AuthorControllerTest {
 
         when(authorService.getAuthorById(1L)).thenReturn(Optional.of(author));
 
-        mockMvc.perform(get("/api/v1/author/1"))
+        mockMvc.perform(get("/api/v1/authors/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value("author1"))
                 .andExpect(jsonPath("$.name").value("Author 1"))
@@ -73,7 +73,7 @@ class AuthorControllerTest {
     void testGetAuthorById_NotFound() throws Exception {
         when(authorService.getAuthorById(99L)).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/api/v1/author/99"))
+        mockMvc.perform(get("/api/v1/authors/99"))
                 .andExpect(status().isNotFound());
     }
 
@@ -92,7 +92,7 @@ class AuthorControllerTest {
 
         when(authorService.updateAuthor(eq(1L), any())).thenReturn(response);
 
-        mockMvc.perform(put("/api/v1/author/1")
+        mockMvc.perform(put("/api/v1/authors/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -105,7 +105,7 @@ class AuthorControllerTest {
     void testDeleteAuthor() throws Exception {
         doNothing().when(authorService).deleteAuthor(1L);
 
-        mockMvc.perform(delete("/api/v1/author/1"))
+        mockMvc.perform(delete("/api/v1/authors/1"))
                 .andExpect(status().isNoContent());
     }
 }
