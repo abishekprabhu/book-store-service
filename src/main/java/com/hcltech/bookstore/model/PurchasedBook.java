@@ -22,7 +22,7 @@ public class PurchasedBook {
 
     private LocalDateTime purchaseDate;
 
-    @ManyToOne //(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "book_id")
     @JsonManagedReference
     private Book book;
@@ -31,4 +31,5 @@ public class PurchasedBook {
     @JoinColumn(name = "customer_id")
     @JsonManagedReference
     private Customer customer;
+
 }

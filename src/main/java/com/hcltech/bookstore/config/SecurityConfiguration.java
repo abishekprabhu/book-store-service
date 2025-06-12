@@ -59,6 +59,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/customer/**").hasRole("CUSTOMER")
                         .requestMatchers(HttpMethod.GET, "/api/v1/books").hasAnyRole("AUTHOR","CUSTOMER")
                         .requestMatchers("/api/v1/books/**").hasRole("AUTHOR")
+                        .requestMatchers("api/v1/customers").hasRole("CUSTOMER")
                         .requestMatchers("/api/v1/purchases/**").hasRole("CUSTOMER")
                         .anyRequest()
                         .authenticated())

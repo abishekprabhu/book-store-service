@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration monitorInterval="60">
     <Properties>
-        <Property name="log-path">C:/Users/abishekprabhu.kannan/Downloads/Java_Projects/bookstore-test/bookstore/logs/</Property>
-        <Property name="log-path_back">C:/Users/abishekprabhu.kannan/Downloads/Java_Projects/bookstore-test/bookstore/logs/</Property>
+        <Property name="log-path">C:/Users/abishekprabhu.kannan/Downloads/Java_Projects/bookstore/logs/</Property>
+        <Property name="log-path_back">C:/Users/abishekprabhu.kannan/Downloads/Java_Projects/bookstore/logs/</Property>
         <property name="pattern">%d{yyyy-MMM-dd HH:mm:ss} [%t] %-5level %-50c{1.} - %msg%n</property>
     </Properties>
     <Appenders>

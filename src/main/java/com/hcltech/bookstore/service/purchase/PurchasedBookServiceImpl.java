@@ -14,6 +14,7 @@ import com.hcltech.bookstore.model.Customer;
 import com.hcltech.bookstore.model.PurchasedBook;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -26,6 +27,8 @@ public class PurchasedBookServiceImpl implements PurchasedBookService{
     private final PurchasedBookServiceDao purchasedBookServiceDAO;
     private final PurchasedBookMapper purchasedBookMapper;
 
+    @Override
+    @Transactional
     public PurchasedBookResponseDto purchaseBook(PurchasedBookRequestDto dto) {
         Book book = bookServiceDAO.findById(dto.getBookId())
                 .orElseThrow(() -> new BookNotFoundException("Book not found"));

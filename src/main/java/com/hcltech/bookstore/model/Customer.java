@@ -15,7 +15,12 @@ public class Customer extends User{
 
     private String name;
 
-    @OneToMany(mappedBy = "customer")
-    @JsonBackReference
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchasedBook> purchasedBooks;
+
+
+/*    @OneToMany(mappedBy = "customer")
+    private List<PurchasedBook> purchasedBooks;*/
 }
