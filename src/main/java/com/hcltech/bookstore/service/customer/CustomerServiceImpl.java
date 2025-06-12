@@ -29,27 +29,37 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional
     public CustomerResponseDto getById(Long id) {
+        log.info("Fetching customer with ID: {}", id);
         Customer customer = customerServiceDAO.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(CUSTOMER_NOT_FOUND + id));
-
+        log.debug("Customer found: {}", customer.getUsername());
         return customerMapper.toDto(customer);
     }
     @Override
     @Transactional
     public List<CustomerResponseDto> getAll() {
-        return customerMapper.toDtoList(customerServiceDAO.findAll());
+        log.info("Fetching all customers");
+        List<Customer> customers = customerServiceDAO.findAll();
+        log.debug("Total customers retrieved: {}", customers.size());
+        return customerMapper.toDtoList(customers);
     }
     @Override
     @Transactional
     public CustomerResponseDto update(Long id, CustomerRequestDto dto) {
-        Customer customer = customerServiceDAO.findById(id).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+        log.info("Updating customer with ID: {}", id);
+        Customer customer = customerServiceDAO.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(CUSTOMER_NOT_FOUND + id));
         customer.setName(dto.getName());
-        return customerMapper.toDto(customerServiceDAO.save(customer));
+        Customer updatedCustomer = customerServiceDAO.save(customer);
+        log.info("Customer with ID {} updated successfully", id);
+        return customerMapper.toDto(updatedCustomer);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
+        log.info("Deleting customer with ID: {}", id);
         customerServiceDAO.deleteById(id);
+        log.info("Customer with ID {} deleted successfully", id);
     }
 }

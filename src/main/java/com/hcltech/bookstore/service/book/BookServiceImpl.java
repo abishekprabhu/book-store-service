@@ -36,18 +36,22 @@ public class BookServiceImpl implements BookService {
         Book book = bookMapper.toEntity(bookRequestDTO);
 
         if (bookRequestDTO.getAuthorId() != null) {
-            log.info("Assigning author with ID: {} to the book", bookRequestDTO.getAuthorId());
+            log.debug("Assigning author with ID: {} to the book", bookRequestDTO.getAuthorId());
             Author author = authorServiceDAO.findById(bookRequestDTO.getAuthorId())
                     .orElseThrow(() -> {
                         log.error("Author not found with ID: {}", bookRequestDTO.getAuthorId());
                         return new EntityNotFoundException(AUTHOR_NOT_FOUND);
                     });
             book.setAuthor(author);
-        }else{
+            log.info("Author with ID {} assigned to book", author.getId());
+        } else {
+            log.info("No author ID provided. Book will be saved without an author.");
             book.setAuthor(null);
         }
-        if(bookRequestDTO.getImg() == null)
+        if (bookRequestDTO.getImg() == null) {
+            log.info("No image provided for the book");
             bookRequestDTO.setImg(null);
+        }
 
         Book savedBook = bookServiceDAO.save(book);
         log.info("Book created successfully with ID: {}", savedBook.getId());
@@ -57,10 +61,11 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<BookResponseDto> getAllBooks() {
         log.info("Fetching all books");
-        return bookServiceDAO.findAll()
-                .stream()
+        List<BookResponseDto> books = bookServiceDAO.findAll().stream()
                 .map(bookMapper::toDTO)
                 .toList();
+        log.debug("Total books retrieved: {}", books.size());
+        return books;
     }
 
     @Override
@@ -71,6 +76,7 @@ public class BookServiceImpl implements BookService {
                     log.error("Book not found with ID: {}", id);
                     return new EntityNotFoundException(BOOK_NOT_FOUND);
                 });
+        log.debug("Book found: {}", book.getTitle());
         return bookMapper.toDTO(book);
     }
 
@@ -98,38 +104,49 @@ public class BookServiceImpl implements BookService {
         if (dto.getImg() != null && !dto.getImg().isEmpty()) {
             try {
                 book.setImg(dto.getImg().getBytes());
+                log.info("Book image updated successfully");
             } catch (IOException e) {
-                throw new CustomException("Failed to update image" + e);
+                log.error("Error occurred while updating book image", e);
+                throw new CustomException("Failed to update image: " + e.getMessage());
             }
-        }else{
+        } else {
+            log.info("No image provided during update; clearing image field");
             book.setImg(null);
         }
 
         Book updatedBook = bookServiceDAO.save(book);
+        log.info("Book updated successfully with ID: {}", updatedBook.getId());
         return bookMapper.toDTO(updatedBook);
     }
 
     @Override
     public void deleteBook(Long id) {
+        log.info("Deleting book with ID: {}", id);
         Book book = bookServiceDAO.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND));
         bookServiceDAO.delete(book);
+        log.info("Book with ID {} deleted successfully", id);
     }
 
     @Override
     public void addStock(Long id, int quantity) {
+        log.info("Adding stock. Book ID: {}, Quantity: {}", id, quantity);
         Book book = bookServiceDAO.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND));
         book.setStock(book.getStock() + quantity);
         bookServiceDAO.save(book);
+        log.info("Stock updated. Book ID: {}, New Stock: {}", id, book.getStock());
     }
 
     @Override
     public BookResponseDto assignBookToAuthor(Long bookId, Long authorId) {
+        log.info("Assigning book ID {} to author ID {}", bookId, authorId);
         Book book = bookServiceDAO.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException(BOOK_NOT_FOUND));
 
         if (book.getAuthor() != null && !book.getAuthor().getId().equals(authorId)) {
+            log.warn("Book already assigned to author ID {}. Cannot assign to author ID {}",
+                    book.getAuthor().getId(), authorId);
             throw new IllegalStateException("Book is already assigned to another author.");
         }
 
@@ -137,6 +154,7 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new EntityNotFoundException(AUTHOR_NOT_FOUND));
 
         book.setAuthor(author);
+        log.info("Book ID {} successfully assigned to author ID {}", bookId, authorId);
         return bookMapper.toDTO(bookServiceDAO.save(book));
     }
 

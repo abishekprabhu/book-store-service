@@ -13,12 +13,14 @@ import com.hcltech.bookstore.model.Book;
 import com.hcltech.bookstore.model.Customer;
 import com.hcltech.bookstore.model.PurchasedBook;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PurchasedBookServiceImpl implements PurchasedBookService{
 
@@ -30,10 +32,17 @@ public class PurchasedBookServiceImpl implements PurchasedBookService{
     @Override
     @Transactional
     public PurchasedBookResponseDto purchaseBook(PurchasedBookRequestDto dto) {
+        log.info("Initiating book purchase for Book ID: {}, Customer ID: {}, Quantity: {}",
+                dto.getBookId(), dto.getCustomerId(), dto.getQuantity());
         Book book = bookServiceDAO.findById(dto.getBookId())
-                .orElseThrow(() -> new BookNotFoundException("Book not found"));
+                .orElseThrow(() -> {
+                    log.error("Book not found with ID: {}", dto.getBookId());
+                    return new BookNotFoundException("Book not found");
+                });
 
         if (book.getStock() < dto.getQuantity()) {
+            log.warn("Insufficient stock for Book ID: {}. Available: {}, Requested: {}",
+                    dto.getBookId(), book.getStock(), dto.getQuantity());
             throw new InsufficientStockException("Not enough stock available");
         }
 
@@ -43,6 +52,7 @@ public class PurchasedBookServiceImpl implements PurchasedBookService{
         // Reduce stock
         book.setStock(book.getStock() - dto.getQuantity());
         bookServiceDAO.save(book);
+        log.info("Reduced stock for Book ID: {}. New stock: {}", book.getId(), book.getStock());
 
         PurchasedBook purchase = new PurchasedBook();
         purchase.setBook(book);
@@ -50,6 +60,9 @@ public class PurchasedBookServiceImpl implements PurchasedBookService{
         purchase.setQuantity(dto.getQuantity());
         purchase.setPurchaseDate(LocalDateTime.now());
 
-        return purchasedBookMapper.toDTO(purchasedBookServiceDAO.save(purchase));
+        PurchasedBook savedPurchase = purchasedBookServiceDAO.save(purchase);
+        log.info("Book purchased successfully. Purchase ID: {}", savedPurchase.getId());
+
+        return purchasedBookMapper.toDTO(savedPurchase);
     }
 }
