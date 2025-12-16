@@ -73,7 +73,6 @@ This project is a **Book Store Service** built with **Spring Boot**, designed to
 - `PUT /api/v1/customers/{id}`
 - `DELETE /api/v1/customers/{id}`
 - `GET /api/v1/customers`
-- `POST /api/v1/customers`
 
 ### 🛒 Purchased Book
 - `POST /api/v1/purchases`
@@ -104,3 +103,9 @@ This Book Store REST API is designed to demonstrate:
 - 🔁 Real-world CRUD operation implementation
 - 🔗 Entity relationships and data management
 - 🧪 Testing, validation, and observability
+
+---
+## Entity Relationship Diagram
+![img_1.png](img_1.png)
+
+---
